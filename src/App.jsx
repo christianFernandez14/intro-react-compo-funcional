@@ -1,38 +1,36 @@
-import { Component, useState } from "react";
-// import MiComponente from "./MiComponente";
+import { useState, useEffect } from "react";
 
-// Aca veremos una simple comparacion de entre useState y estado manejado con clases.
-class App extends Component{
- state  = {
-   contador : 0 
+const useContador = (valorInicial) => {
+  const [contador, setContador] = useState(valorInicial)
+  const incrementar = () => {
+    setContador(contador + 1)
   }
-  incrementar = () => {
-    this.setContador({ contador: this.state.contador + 1})
-  }
-  render() {
-    return (
-      <div>
-      Contador: {this.state.contador}
-      <div>
-        <button onClick={this.incrementar}>Incrementar</button>
-        </div>
-    </div>
 
-    )
-  }
+  return [contador, incrementar]
 }
 
 
+const Interval = ({ contador }) => {
+  useEffect(()=>{
+    const i = setInterval(()=> console.log(contador), 1000)
+    // De este manera setamos los intervalos que hay entre una actulizacion y otra
+    return ()=> clearInterval(i)
+  }, [contador])
+}
 
-// const App = () => {
-//   const [contador, setContador] = useState(0)
-//   return (
-//     <div>
-//       Contador: {contador}
-//       <div><button onClick={()=> setContador(contador + 1)}>Incrementar 1</button></div>
-//     </div>
-//   )
-  
-// }
+const App = () => {
+  const [contador, incrementar] = useContador(0)
+  useEffect(()=> {
+    document.title = contador
+  }, [])
+  return (
+    <div>
+      Contador: {contador}
+      <div><button onClick={incrementar}>Incrementar</button></div>
+      <Interval contador={contador} />
+    </div>
+  )
+
+}
 
 export default App
